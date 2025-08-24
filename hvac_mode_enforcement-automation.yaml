@@ -22,10 +22,6 @@ action:
         data:
           hvac_mode: "{{trigger.to_state.state}}"
         target:
-          device_id:
-            - f1dc2d8f3b96cdccadbebe15c77dc355
-            - 9c92936d39ac8e24b40a456aace0fc8c
-            - 430d66ac3f25696332917ea915936d56
           entity_id:
             - climate.hvac_floor_0
             - climate.hvac_floor_1
