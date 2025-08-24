@@ -1,0 +1,89 @@
+alias: HVAC temperature enforcement
+description: Call HVAC temperature enforcement script based on a call from any thermostat
+trigger:
+  - platform: state
+    entity_id:
+      - climate.hvac_floor_0
+      - climate.hvac_floor_1
+      - climate.hvac_floor_2
+    attribute: temperature
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 3
+condition: []
+action:
+  - alias: Variables
+    variables:
+      max_permitted_variation_celsius: 1.11
+      reference_entity_id: "{{ trigger.entity_id }}"
+      target_setpoint: "{{ trigger.to_state.attributes.temperature }}"
+  - alias: Call HVAC temperature enforcement script based on which thermostat called
+    choose:
+      - alias: Floor 0 thermostat called
+        conditions:
+          - alias: If changed thermostat is Floor 0
+            condition: template
+            value_template: "{{ reference_entity_id == 'climate.hvac_floor_0' }}"
+        sequence:
+          - alias: Assign variables for Floor 0 target
+            variables:
+              hvac_A: climate.hvac_floor_1
+              hvac_B: climate.hvac_floor_2
+              hvac_A_setpoint: "{{ state_attr(hvac_A, 'temperature') }}"
+              hvac_B_setpoint: "{{ state_attr(hvac_B, 'temperature') }}"
+          - service: script.hvac_temperature_enforcement
+            metadata: {}
+            data:
+              max_permitted_variation_celsius: "{{ max_permitted_variation_celsius }}"
+              reference_entity_id: "{{ reference_entity_id }}"
+              target_setpoint: "{{ target_setpoint }}"
+              hvac_A_entity_id: "{{ hvac_A }}"
+              hvac_B_entity_id: "{{ hvac_B }}"
+              hvac_A_setpoint: "{{ hvac_A_setpoint }}"
+              hvac_B_setpoint: "{{ hvac_B_setpoint }}"
+      - alias: Floor 1 thermostat called
+        conditions:
+          - alias: If changed thermostat is Floor 1
+            condition: template
+            value_template: "{{ reference_entity_id == 'climate.hvac_floor_1' }}"
+        sequence:
+          - alias: Assign variables for Floor 1 target
+            variables:
+              hvac_A: climate.hvac_floor_0
+              hvac_B: climate.hvac_floor_2
+              hvac_A_setpoint: "{{ state_attr(hvac_A, 'temperature') }}"
+              hvac_B_setpoint: "{{ state_attr(hvac_B, 'temperature') }}"
+          - service: script.hvac_temperature_enforcement
+            metadata: {}
+            data:
+              max_permitted_variation_celsius: "{{ max_permitted_variation_celsius }}"
+              reference_entity_id: "{{ reference_entity_id }}"
+              target_setpoint: "{{ target_setpoint }}"
+              hvac_A_entity_id: "{{ hvac_A }}"
+              hvac_B_entity_id: "{{ hvac_B }}"
+              hvac_A_setpoint: "{{ hvac_A_setpoint }}"
+              hvac_B_setpoint: "{{ hvac_B_setpoint }}"
+      - alias: Floor 2 thermostat called
+        conditions:
+          - alias: If changed thermostat is Floor 2
+            condition: template
+            value_template: "{{ reference_entity_id == 'climate.hvac_floor_2' }}"
+        sequence:
+          - alias: Assign variables for Floor 2 target
+            variables:
+              hvac_A: climate.hvac_floor_0
+              hvac_B: climate.hvac_floor_1
+              hvac_A_setpoint: "{{ state_attr(hvac_A, 'temperature') }}"
+              hvac_B_setpoint: "{{ state_attr(hvac_B, 'temperature') }}"
+          - service: script.hvac_temperature_enforcement
+            metadata: {}
+            data:
+              max_permitted_variation_celsius: "{{ max_permitted_variation_celsius }}"
+              reference_entity_id: "{{ reference_entity_id }}"
+              target_setpoint: "{{ target_setpoint }}"
+              hvac_A_entity_id: "{{ hvac_A }}"
+              hvac_B_entity_id: "{{ hvac_B }}"
+              hvac_A_setpoint: "{{ hvac_A_setpoint }}"
+              hvac_B_setpoint: "{{ hvac_B_setpoint }}"
+mode: single
