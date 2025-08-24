@@ -1,0 +1,101 @@
+alias: HVAC_temperature_enforcement
+sequence:
+  - choose:
+      - conditions:
+          - alias: If hvac_A is too high
+            condition: template
+            value_template: >-
+              {{ hvac_A_setpoint > target_setpoint +
+              max_permitted_variation_celsius }}
+        sequence:
+          - alias: Lower hvac_A to within range
+            service: climate.set_temperature
+            metadata: {}
+            data:
+              temperature: "{{ target_setpoint + max_permitted_variation_celsius }}"
+            target:
+              entity_id: "{{ hvac_A_entity_id }}"
+      - conditions:
+          - alias: If hvac_A is too low
+            condition: template
+            value_template: >-
+              {{ hvac_A_setpoint < target_setpoint -
+              max_permitted_variation_celsius }}
+        sequence:
+          - alias: Raise hvac_A to within range
+            service: climate.set_temperature
+            metadata: {}
+            data:
+              temperature: "{{ target_setpoint - max_permitted_variation_celsius }}"
+            target:
+              entity_id: "{{ hvac_A_entity_id }}"
+  - choose:
+      - conditions:
+          - alias: If hvac_B is too high
+            condition: template
+            value_template: >-
+              {{ hvac_B_setpoint > target_setpoint +
+              max_permitted_variation_celsius }}
+        sequence:
+          - alias: Lower hvac_B to within range
+            service: climate.set_temperature
+            metadata: {}
+            data:
+              temperature: "{{ target_setpoint + max_permitted_variation_celsius }}"
+            target:
+              entity_id: "{{ hvac_B_entity_id }}"
+      - conditions:
+          - alias: If hvac_B is too low
+            condition: template
+            value_template: >-
+              {{ hvac_B_setpoint < target_setpoint -
+              max_permitted_variation_celsius }}
+        sequence:
+          - alias: Raise hvac_B to within range
+            service: climate.set_temperature
+            metadata: {}
+            data:
+              temperature: "{{ target_setpoint - max_permitted_variation_celsius }}"
+            target:
+              entity_id: "{{ hvac_B_entity_id }}"
+mode: single
+icon: mdi:hvac
+fields:
+  hvac_A_entity_id:
+    selector:
+      text: null
+    name: hvac_A_entity_id
+    required: true
+  hvac_B_entity_id:
+    selector:
+      text: null
+    name: hvac_B_entity_id
+    required: true
+  hvac_A_setpoint:
+    selector:
+      number:
+        min: 1
+        max: 100
+    name: hvac_A_setpoint
+    required: true
+  hvac_B_setpoint:
+    selector:
+      number:
+        min: 1
+        max: 100
+    name: hvac_B_setpoint
+    required: true
+  target_setpoint:
+    selector:
+      number:
+        min: 1
+        max: 100
+    name: target_setpoint
+    required: true
+  max_permitted_variation_celsius:
+    selector:
+      number:
+        min: 1
+        max: 100
+    name: max_permitted_variation_celsius
+    required: true
