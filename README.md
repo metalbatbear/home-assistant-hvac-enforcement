@@ -6,4 +6,4 @@ For quasi-multizone central HVAC systems (i.e., with a combined return), it may 
 * hvac_mode_enforcement-automation.yaml runs by itself
 * hvac_temperature_enforcement-automation.yaml calls hvac_temperature_enforcement-script.yaml
 * hvac_limit_enforcement-automation.yaml runs by itself
-* hvac_cool_mode_outdoor_temperature_limit-automation.yaml
+* hvac_cool_mode_outdoor_temperature_limit-automation.yaml requires outdoor temperature from a climate sensor
