@@ -1,0 +1,30 @@
+alias: HVAC cool mode outdoor temperature limit
+description: Prevent operation of cool mode when outside temperature too low
+trigger:
+  - platform: state
+    entity_id:
+      - climate.hvac_floor_0
+      - climate.hvac_floor_1
+      - climate.hvac_floor_2
+    from: null
+    to: cool
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+condition:
+  - condition: numeric_state
+    entity_id: weather.openweathermap
+    attribute: temperature
+    below: 10
+action:
+  - service: climate.set_hvac_mode
+    metadata: {}
+    data:
+      hvac_mode: "off"
+    target:
+      entity_id:
+        - climate.hvac_floor_0
+        - climate.hvac_floor_1
+        - climate.hvac_floor_2
+mode: single
